@@ -20,7 +20,7 @@ use, intrinsic :: iso_c_binding
 	open(unit=19, file="..\res\signal")
 	open(unit=20, file="..\res\transformata")
 	allocate(x(Fs))
-	allocate(res((Fs/2)+1))
+	allocate(res(Fs/2+1))
 	do while ( i .LE. Fs )
 		x(i)=sin(2*pi*t*200) + 2*sin(2*pi*t*400)
 		write(19,*) t, " ", x(i)
@@ -29,7 +29,7 @@ use, intrinsic :: iso_c_binding
 	end do
 	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res, FFTW_ESTIMATE+FFTW_UNALIGNED)
 	call fftw_execute_dft_r2c(fftw_plan, x, res)
-	do i=1,Fs
+	do i=1,Fs/2+1
 		write(20,*) i, " ", abs(res(i))
 	end do
 	if(allocated(x)) deallocate(x)

@@ -38,7 +38,7 @@ program main
 	open(unit=22, file="..\res\transformataCosinusRandom")
 	open(unit=23, file="..\res\afterAll")
 	allocate(x(Fs))
-	allocate(res(Fs))
+	allocate(res(Fs/2+1))
 	do while ( i .LE. Fs )
 		x(i)=cos(2*pi*t)
 		CALL random_number(myRandom)
@@ -50,7 +50,7 @@ program main
 	end do
 	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res,FFTW_ESTIMATE+FFTW_UNALIGNED)
 	call fftw_execute_dft_r2c(fftw_plan, x, res)
-	do i=1,Fs
+	do i=1,Fs/2+1
 		write(22,*) i, " ", abs(res(i))
 		if(abs(res(i))<50) then
 			res(i)=0.0
@@ -62,7 +62,7 @@ program main
 	t=0.0
 	i=1
 	do while ( i .LE. Fs )
-		write(23,*) t, " ", x(i)
+		write(23,*) t, " ", x(i)/Fs
 		t=t+diff
 		i=i+1
 	end do
