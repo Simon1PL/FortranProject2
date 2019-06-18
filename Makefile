@@ -1,7 +1,7 @@
 all:
-	gfortran -o signal zad1.F90 -std=f2008 -Ldirectory -lfftw3
+	gfortran -o signal zad1.F90 -std=f2008 -Ldirectory -Wtabs -lfftw3
 	./signal
-	gfortran -o szumy zad2.F90 -std=f2008 -Ldirectory -lfftw3
+	gfortran -o szumy zad2.F90 -std=f2008 -Ldirectory -Wtabs -lfftw3
 	./szumy
 
 clear:
