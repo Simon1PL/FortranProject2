@@ -66,6 +66,8 @@ program main
 		t=t+diff
 		i=i+1
 	end do
+	if(allocated(x)) deallocate(x)
+	if(allocated(res)) deallocate(res)
 	call fftw_destroy_plan(fftw_plan)
 	call fftw_destroy_plan(fftw_plan2)
 	close(19)
@@ -73,4 +75,4 @@ program main
 	close(21)
 	close(22)
 	close(23)
-end program main
+	end program main

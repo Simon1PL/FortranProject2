@@ -1,5 +1,5 @@
 program main
-	use, intrinsic :: iso_c_binding
+use, intrinsic :: iso_c_binding
 	implicit none
 	include "fftw3.f03"
 	!W JULIII
@@ -32,6 +32,8 @@ program main
 	do i=1,Fs
 		write(20,*) i, " ", abs(res(i))
 	end do
+	if(allocated(x)) deallocate(x)
+	if(allocated(res)) deallocate(res)
 	call fftw_destroy_plan(fftw_plan)
 	close(19)
 	close(20)
