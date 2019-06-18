@@ -15,6 +15,7 @@ program main
 	real(kind = c_double), allocatable :: x(:) 
 	real(kind= c_double_complex), allocatable :: res(:)
 	integer :: i = 1
+	real, parameter :: pi = 3.14159
 	type(c_ptr) :: fftw_plan
 	open(unit=19, file="..\res\signal")
 	open(unit=20, file="..\res\transformata")
@@ -24,6 +25,7 @@ program main
 		x(i)=sin(2*pi*t*200) + 2*sin(2*pi*t*400)
 		write(19,*)t, " ", x(i)
 		t=t+diff
+		i=i+1
 	end do
 	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res,FFTW_ESTIMATE+FFTW_UNALIGNED)
 	call fftw_execute_dft_r2c(fftw_plan, x, res)

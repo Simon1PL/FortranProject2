@@ -1,100 +1,73 @@
 program main
-	use naivemath
-	use bettermath
-	use dotmath
+	use, intrinsic :: iso_c_binding
 	implicit none
-	real(kind=4), allocatable, dimension(:,:) :: akind4, bkind4, res4
-	real(kind=8), allocatable, dimension(:,:) :: akind8, bkind8, res8
-	real(kind=16), allocatable, dimension(:,:) :: akind16, bkind16, res16
-	real :: start, endd
-	integer :: i, seed(12)
-	seed=time()
-	call random_seed(put=seed)
-	open(unit=19, file="..\res\res4naive")
-	open(unit=20, file="..\res\res4better")
-	open(unit=21, file="..\res\res4dot")
-	open(unit=22, file="..\res\res4matmul")
-	open(unit=23, file="..\res\res8naive")
-	open(unit=24, file="..\res\res8better")
-	open(unit=25, file="..\res\res8dot")
-	open(unit=26, file="..\res\res8matmul")
-	open(unit=27, file="..\res\res16naive")
-	open(unit=28, file="..\res\res16better")
-	open(unit=29, file="..\res\res16dot")
-	open(unit=30, file="..\res\res16matmul")
-	!akind4=reshape([1,2,1,3,1,2],[3,2])
-	!bkind4=reshape([2,3,3,4,1,4,2,5],[2,4])
-	i=10
-	do while ( i .LE. 1280 )
-		!kind4
-		allocate (akind4(i,i))
-		allocate (bkind4(i,i))
-		CALL RANDOM_NUMBER(akind4)
-		CALL RANDOM_NUMBER(bkind4)
-		call cpu_time(start)
-		res4=naivmull(akind4,bkind4)
-		call cpu_time(endd)
-		write (19,*) i, endd-start
-		call cpu_time(start)
-		res4=bettmull(akind4,bkind4)
-		call cpu_time(endd)
-		write (20,*) i, endd-start
-		call cpu_time(start)
-		res4=dotmull(akind4,bkind4)
-		call cpu_time(endd)
-		write (21,*) i, endd-start
-		call cpu_time(start)
-		res4=matmul(akind4, bkind4)
-		call cpu_time(endd)
-		write (22,*) i, endd-start
-		if(allocated(akind4)) deallocate(akind4)
-		if(allocated(bkind4)) deallocate(bkind4)
-		!kind8
-		allocate (akind8(i,i))
-		allocate (bkind8(i,i))
-		CALL RANDOM_NUMBER(akind8)
-		CALL RANDOM_NUMBER(bkind8)
-		call cpu_time(start)
-		res8=naivmull(akind8,bkind8)
-		call cpu_time(endd)
-		write (23,*) i, endd-start
-		call cpu_time(start)
-		res8=bettmull(akind8,bkind8)
-		call cpu_time(endd)
-		write (24,*) i, endd-start
-		call cpu_time(start)
-		res8=dotmull(akind8,bkind8)
-		call cpu_time(endd)
-		write (25,*) i, endd-start
-		call cpu_time(start)
-		res8=matmul(akind8, bkind8)
-		call cpu_time(endd)
-		write (26,*) i, endd-start
-		if(allocated(akind8)) deallocate(akind8)
-		if(allocated(bkind8)) deallocate(bkind8)
-		!kind16
-		allocate (akind16(i,i))
-		allocate (bkind16(i,i))
-		CALL RANDOM_NUMBER(akind16)
-		CALL RANDOM_NUMBER(bkind16)
-		call cpu_time(start)
-		res16=naivmull(akind16,bkind16)
-		call cpu_time(endd)
-		write (27,*) i, endd-start
-		call cpu_time(start)
-		res16=bettmull(akind16,bkind16)
-		call cpu_time(endd)
-		write (28,*) i, endd-start
-		call cpu_time(start)
-		res16=dotmull(akind16,bkind16)
-		call cpu_time(endd)
-		write (29,*) i, endd-start
-		call cpu_time(start)
-		res16=matmul(akind16, bkind16)
-		call cpu_time(endd)
-		write (30,*) i, endd-start
-		if(allocated(akind16)) deallocate(akind16)
-		if(allocated(bkind16)) deallocate(bkind16)
-		i=2*i
+	include "fftw3.f03"
+	!W JULIII
+	!Fs = 1024;  
+	!t = 0:1/(Fs-1):1 
+	!x=cos.(2*pi*t)
+	!x=map(a->a+rand(),x)
+	!using Plots
+	!plot(t,x)
+	!using FFTW
+	!y=abs.(fft(x))
+	!sticks(y)
+	!i=1:1:1024
+	!for x in i
+	!    if(abs(y[x])<50)
+	!        y[x]=0
+	!    end
+	!end
+	!sticks(y)
+	!re=real(ifft(y))
+	!plot(t,re)
+	!FORTRAN
+	integer, parameter :: Fs = 1024
+	real(kind = 16) :: t = 0.0
+	real(kind = 16) :: diff = 1/real(Fs-1)
+	real(kind = c_double), allocatable :: x(:) 
+	real(kind= c_double_complex), allocatable :: res(:)
+	integer :: i = 1
+	real, parameter :: pi = 3.14159, myRandom
+	type(c_ptr) :: fftw_plan
+	open(unit=19, file="..\res\cosinus")
+	open(unit=20, file="..\res\transformataCosinus")
+	open(unit=21, file="..\res\cosinusRandom")
+	open(unit=22, file="..\res\transformataCosinusRandom")
+	open(unit=23, file="..\res\afterAll")
+	allocate(x(Fs))
+	allocate(res((Fs/2)+1))
+	do while ( i .LE. Fs )
+		x(i)=cos(2*pi*t)
+		CALL random_number(myRandom)
+		write(19,*)t, " ", x(i)
+		x(i)=x(i)+myRandom
+		write(21,*)t, " ", x(i)
+		t=t+diff
+		i=i+1
 	end do
+	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res,FFTW_ESTIMATE+FFTW_UNALIGNED)
+	call fftw_execute_dft_r2c(fftw_plan, x, res)
+	do i=1,(Fs/2)+1
+		write(22,*)i, " ", abs(res(i))
+		if(abs(res(i))<50) then
+			res(i)=0.0
+		end if
+		write(20,*)i, " ", abs(res(i))
+	end do
+	fftw_plan2 = fftw_plan_dft_c2r_1d(size(x), res, x, FFTW_ESTIMATE+FFTW_UNALIGNED)
+	call fftw_execute_dft_c2r(fftw_plan2, res, x)
+	t=0.0
+	do while ( i .LE. Fs )
+		write(23,*)t, " ", x(i)/Fs
+		t=t+diff
+		i=i+1
+	end do
+	call fftw_destroy_plan(fftw_plan)
+	call fftw_destroy_plan(fftw_plan2)
+	close(19)
+	close(20)
+	close(21)
+	close(22)
+	close(23)
 end program main
