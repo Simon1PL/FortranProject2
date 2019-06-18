@@ -28,7 +28,9 @@ program main
 	real(kind = c_double), allocatable :: x(:) 
 	complex(kind= c_double_complex), allocatable :: res(:)
 	integer :: i = 1
-	real, parameter :: pi = 3.14159, myRandom
+	real, parameter :: pi = 3.14159
+	real :: myRandom
+	type(c_ptr) :: fftw_plan2
 	type(c_ptr) :: fftw_plan
 	open(unit=19, file="..\res\cosinus")
 	open(unit=20, file="..\res\transformataCosinus")
