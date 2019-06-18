@@ -13,7 +13,7 @@ program main
 	real(kind = 16) :: t = 0.0
 	real(kind = 16) :: diff = 1/real(Fs-1)
 	real(kind = c_double), allocatable :: x(:) 
-	real(kind= c_double_complex), allocatable :: res(:)
+	complex(kind= c_double_complex), allocatable :: res(:)
 	integer :: i = 1
 	real, parameter :: pi = 3.14159
 	type(c_ptr) :: fftw_plan
@@ -29,7 +29,7 @@ program main
 	end do
 	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res,FFTW_ESTIMATE+FFTW_UNALIGNED)
 	call fftw_execute_dft_r2c(fftw_plan, x, res)
-	do i=1,(n/2)+1
+	do i=1,(Fs/2)+1
 		write(20,*)i, " ", abs(res(i))
 	end do
 	call fftw_destroy_plan(fftw_plan)

@@ -26,7 +26,7 @@ program main
 	real(kind = 16) :: t = 0.0
 	real(kind = 16) :: diff = 1/real(Fs-1)
 	real(kind = c_double), allocatable :: x(:) 
-	real(kind= c_double_complex), allocatable :: res(:)
+	complex(kind= c_double_complex), allocatable :: res(:)
 	integer :: i = 1
 	real, parameter :: pi = 3.14159, myRandom
 	type(c_ptr) :: fftw_plan
