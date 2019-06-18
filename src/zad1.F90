@@ -2,47 +2,35 @@ program main
 	use, intrinsic :: iso_c_binding
 	implicit none
 	include "fftw3.f03"
-	integer, parameter :: Fs = 1024
-	
 	!W JULIII
-	Fs = 1024;
-	t = 0:1/(Fs-1):1 
-	x = sin.(2*pi*t*200) + 2* sin.(2*pi*t*400)
-	plot(t,x)
-	sticks((abs.(fft(x))))
-	!KONIEC
-
-	real(kind=4), allocatable, dimension(:,:) :: akind4
-	real :: start, endd
-	integer :: i, seed(12)
-	seed=time()
-	call random_seed(put=seed)
-	open(unit=19, file="..\res\res4naive")
-	open(unit=20, file="..\res\res4better")
-	i=10
-	do while ( i .LE. 1280 )
-		allocate (akind4(i,i))
-		allocate (bkind4(i,i))
-		CALL RANDOM_NUMBER(akind4)
-		CALL RANDOM_NUMBER(bkind4)
-		call cpu_time(start)
-		res4=naivmull(akind4,bkind4)
-		call cpu_time(endd)
-		write (19,*) i, endd-start
-		call cpu_time(start)
-		res4=bettmull(akind4,bkind4)
-		call cpu_time(endd)
-		write (20,*) i, endd-start
-		call cpu_time(start)
-		res4=dotmull(akind4,bkind4)
-		call cpu_time(endd)
-		write (21,*) i, endd-start
-		call cpu_time(start)
-		res4=matmul(akind4, bkind4)
-		call cpu_time(endd)
-		write (22,*) i, endd-start
-		if(allocated(akind4)) deallocate(akind4)
-		if(allocated(bkind4)) deallocate(bkind4)
-		i=2*i
+	!Fs = 1024;
+	!t = 0:1/(Fs-1):1 
+	!x = sin.(2*pi*t*200) + 2* sin.(2*pi*t*400)
+	!plot(t,x)
+	!sticks((abs.(fft(x))))
+	!FORTRAN
+	integer, parameter :: Fs = 1024
+	real(kind = 16) :: t = 0.0
+	real(kind = 16) :: diff = 1/real(Fs-1)
+	real(kind = c_double), allocatable :: x(:) 
+	real(kind= c_double_complex), allocatable :: res(:)
+	integer :: i = 1
+	type(c_ptr) :: fftw_plan
+	open(unit=19, file="..\res\signal")
+	open(unit=20, file="..\res\transformata")
+	allocate(x(Fs))
+	allocate(res((Fs/2)+1))
+	do while ( i .LE. Fs )
+		x(i)=sin(2*pi*t*200) + 2*sin(2*pi*t*400)
+		write(19,*)t, " ", x(i)
+		t=t+diff
 	end do
+	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res,FFTW_ESTIMATE+FFTW_UNALIGNED)
+	call fftw_execute_dft_r2c(fftw_plan, x, res)
+	do i=1,(n/2)+1
+		write(20,*)i, " ", abs(res(i))
+	end do
+	call fftw_destroy_plan(fftw_plan)
+	close(19)
+	close(20)
 end program main
