@@ -27,9 +27,9 @@ program main
 		t=t+diff
 		i=i+1
 	end do
-	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res,FFTW_ESTIMATE+FFTW_UNALIGNED)
+	fftw_plan=fftw_plan_dft_r2c_1d(size(x), x, res, FFTW_ESTIMATE+FFTW_UNALIGNED)
 	call fftw_execute_dft_r2c(fftw_plan, x, res)
-	do i=1,(Fs/2)+1
+	do i=1,Fs
 		write(20,*)i, " ", abs(res(i))
 	end do
 	call fftw_destroy_plan(fftw_plan)
