@@ -27,6 +27,6 @@ Program zawiera plik Makefile kompilujący i uruchamiający zadanie 1 oraz 2
 
 ### Wnioski:
 Wykresy:  
-![4](https://user-images.githubusercontent.com/44688394/57106963-15508600-6d2f-11e9-94ee-e0ae14303cc0.PNG)
-![8](https://user-images.githubusercontent.com/44688394/57106805-9fe4b580-6d2e-11e9-9bd2-a84bdc5b0e80.PNG)
-![16](https://user-images.githubusercontent.com/44688394/57106940-0073f280-6d2f-11e9-8a01-0fc0a40a2804.PNG)
+![signal.pdf](https://github.com/Simon1PL/FortranProject2/files/3308093/signal.pdf)
+![transformata.pdf](https://github.com/Simon1PL/FortranProject2/files/3308094/transformata.pdf)
+![cosinus.pdf](https://github.com/Simon1PL/FortranProject2/files/3308098/cosinus.pdf)
